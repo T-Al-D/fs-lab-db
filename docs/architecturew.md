@@ -1,10 +1,35 @@
-# Architecture Overview
+## Benchmark Inserts & Key Strategy
 
-This repository follows a strict separation of concerns:
+### Identifier Strategy
 
-- One Supabase project per technical purpose
-- Minimal schemas to reduce benchmark interference
-- External cron jobs to avoid vendor lock-in
+Benchmark rows use UUIDs as primary keys instead of auto-incrementing IDs.
 
-Benchmarks are stored in aggregated form to ensure
-low write overhead and reproducible results.
+This allows:
+
+- Distributed cron jobs without coordination
+- No sequence locking during inserts
+- Lower risk of benchmark self-interference
+
+Human readability is intentionally sacrificed in favor of system correctness.
+
+### Write Access
+
+All benchmark inserts are performed using the Supabase Service Role key.
+
+Rationale:
+
+- No authentication layer is required
+- Row Level Security is intentionally disabled
+- Keys are used only in server-side or cron environments
+
+Publishable keys are not used for write operations.
+
+### Validation
+
+A manual test insert was executed directly via SQL to validate:
+
+- Table constraints
+- Default values
+- Timestamp handling
+
+Only after successful validation are automated cron inserts allowed.
