@@ -1,0 +1,13 @@
+# OS / Editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Environment files (falls später)
+.env
+.env.*
+
+# DB dumps / backups
+*.dump
+*.sql.bak
